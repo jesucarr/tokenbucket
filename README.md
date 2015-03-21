@@ -1,7 +1,7 @@
 [![Dependency status](https://img.shields.io/david/jesucarr/tokenbucket.svg?style=flat)](https://david-dm.org/jesucarr/tokenbucket)
 [![devDependency Status](https://img.shields.io/david/dev/jesucarr/tokenbucket.svg?style=flat)](https://david-dm.org/jesucarr/tokenbucket#info=devDependencies)
 [![Build Status](https://img.shields.io/travis/jesucarr/tokenbucket.svg?style=flat&branch=master)](https://travis-ci.org/jesucarr/tokenbucket)
-
+[![Test Coverage](https://img.shields.io/coveralls/jesucarr/tokenbucket.svg?style=flat&branch=master)](https://coveralls.io/r/jesucarr/tokenbucket)
 [![NPM](https://nodei.co/npm/tokenbucket.svg?style=flat)](https://npmjs.org/package/tokenbucket)
 
 <a name="module_tokenbucket"></a>
@@ -132,7 +132,7 @@ If we had to wait more than the specified `maxWait` to get enough tokens, we wou
 ```javascript
 tokenBucket.removeTokens(3).then(function(remainingTokens) {
    console.log('10 tokens removed, ' + remainingTokens + 'tokens left');
-   // Do triple API call
+   // make triple API call
 }).catch(function (err) {
   console.log(err)
   if (err.name === 'ExceedsMaxWait') {
@@ -154,14 +154,14 @@ Attempt to remove the requested number of tokens and return inmediately.
 **Example**  
 ```javascript
 if (tokenBucket.removeTokensSync(50)) {
-  // The tokens were removed
+  // the tokens were removed
 } else {
-  // The tokens were not removed
+  // the tokens were not removed
 }
 ```
 <a name="module_tokenbucket--TokenBucket#save"></a>
 #### tokenBucket.save() ⇒ <code>Promise</code>
-Saves the bucket lastFill and tokensLeft to Redis.
+Saves the bucket lastFill and tokensLeft to Redis. If it has any parents with `redis` options, they will get saved too.
 
 **Kind**: instance method of <code>[TokenBucket](#exp_module_tokenbucket--TokenBucket)</code>  
 **Returns**: <code>Promise</code> - On success the promise will be resolved without parameters. On error will be rejected with an `Error`.
@@ -174,7 +174,7 @@ We are saving the bucket state in Redis, so we first load from Redis, and before
 Note that if it had parent buckets with Redis options set, they would get saved too.
 ```javascript
 tokenBucket.loadSaved().then(function () {
-  // Now the bucket has the state it had last time we saved it.
+  // now the bucket has the state it had last time we saved it
   return tokenBucket.removeTokens().then(function() {
      // make API call
   });
@@ -192,7 +192,7 @@ tokenBucket.loadSaved().then(function () {
 ```
 <a name="module_tokenbucket--TokenBucket#loadSaved"></a>
 #### tokenBucket.loadSaved() ⇒ <code>Promise</code>
-Loads the bucket lastFill and tokensLeft as it was saved in Redis
+Loads the bucket lastFill and tokensLeft as it was saved in Redis. If it has any parents with `redis` options, they will get loaded too.
 
 **Kind**: instance method of <code>[TokenBucket](#exp_module_tokenbucket--TokenBucket)</code>  
 **Returns**: <code>Promise</code> - On success the promise will be resolved without parameters. On error will be rejected with an `Error`.
@@ -205,6 +205,22 @@ See [save()](#TokenBucket#save)
 ## Testing
 
     npm test
+
+## Development and Contributing
+
+The source code is in CoffeeScript, to compile automatically when you save, run
+
+    gulp
+
+Documentation is inline, using [jsdoc-to-markdown](https://github.com/75lb/jsdoc-to-markdown). To update the README.md file just run
+
+    gulp doc
+
+Contributions are welcome!
+
+## Credits
+
+Originally inspired by [limiter](https://github.com/jhurliman/node-rate-limiter)
 
 ## License
 

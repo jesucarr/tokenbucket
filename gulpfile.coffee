@@ -6,11 +6,10 @@ istanbul = require 'gulp-istanbul'
 mocha = require 'gulp-mocha'
 watch = require 'gulp-watch'
 plumber = require 'gulp-plumber'
-# jsdoc2md = require 'gulp-jsdoc-to-markdown'
 jsdoc2md = require("jsdoc-to-markdown")
 concat = require("gulp-concat")
 fs = require("fs")
-# markdox = require("gulp-markdox")
+coveralls = require('gulp-coveralls')
 
 onError = (err) ->
   gutil.beep()
@@ -33,6 +32,10 @@ gulp.task 'test', ['coffee'], ->
           compilers: 'coffee:coffee-script'
           timeout: 3000
         .pipe istanbul.writeReports() # Creating the reports after tests run
+
+gulp.task 'coveralls', ->
+  gulp.src('coverage/lcov.info')
+    .pipe(coveralls())
 
 gulp.task "doc", ->
   src = "lib/**/*.js"

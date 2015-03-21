@@ -162,7 +162,6 @@ describe 'a tokenbucket with maxWait', ->
       done: done
   it 'will not remove tokens when maxWait is exceeded and reject with the right error', (done) ->
     bucket.removeTokens(10).catch (err) ->
-      console.log err
       expect(err instanceof Error).true
       expect(err.name).eql 'ExceedsMaxWait'
       expect(err.message).eql 'It will exceed maximum waiting time'
