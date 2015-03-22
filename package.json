@@ -1,6 +1,6 @@
 {
   "name": "tokenbucket",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "A flexible rate limiter using different variations of the Token Bucket algorithm, with hierarchy support, and optional persistence in Redis. Useful for limiting API requests, or other tasks that need to be throttled.",
   "keywords": [
     "rate limiter",
