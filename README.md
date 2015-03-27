@@ -45,11 +45,11 @@ The class that the module exports and that instantiate a new token bucket with t
 | [options] | <code>Object</code> |  | The options object |
 | [options.size] | <code>Number</code> | <code>1</code> | Maximum number of tokens to hold in the bucket. Also known as the burst size. |
 | [options.tokensToAddPerInterval] | <code>Number</code> | <code>1</code> | Number of tokens to add to the bucket in one interval. |
-| [options.interval] | <code>Number</code> \| <code>String</code> | <code>1000</code> | The time passing between adding tokens, in milliseconds or as one of the following strings: 'second', 'minute', 'hour', day'. |
+| [options.interval] | <code>Number</code> &#124; <code>String</code> | <code>1000</code> | The time passing between adding tokens, in milliseconds or as one of the following strings: 'second', 'minute', 'hour', day'. |
 | [options.lastFill] | <code>Number</code> |  | The timestamp of the last time when tokens where added to the bucket (last interval). |
 | [options.tokensLeft] | <code>Number</code> | <code>size</code> | By default it will initialize full of tokens, but you can set here the number of tokens you want to initialize it with. |
 | [options.spread] | <code>Boolean</code> | <code>false</code> | By default it will wait the interval, and then add all the tokensToAddPerInterval at once. If you set this to true, it will insert fractions of tokens at any given time, spreading the token addition along the interval. |
-| [options.maxWait] | <code>Number</code> \| <code>String</code> |  | The maximum time that we would wait for enough tokens to be added, in milliseconds or as one of the following strings: 'second', 'minute', 'hour', day'. If any of the parents in the hierarchy has `maxWait`, we will use the smallest value. |
+| [options.maxWait] | <code>Number</code> &#124; <code>String</code> |  | The maximum time that we would wait for enough tokens to be added, in milliseconds or as one of the following strings: 'second', 'minute', 'hour', day'. If any of the parents in the hierarchy has `maxWait`, we will use the smallest value. |
 | [options.redis] | <code>Object</code> |  | Options object for Redis |
 | options.redis.bucketName | <code>String</code> |  | The name of the bucket to reference it in Redis. Must be unique. |
 | options.redis.redisClient | <code>String</code> |  | The [Redis client](https://github.com/mranney/node_redis) to save the bucket. |
@@ -216,17 +216,17 @@ Documentation is inline, using [jsdoc-to-markdown](https://github.com/75lb/jsdoc
 
     gulp doc
 
-Contributions are welcome!
+Contributions are welcome! Pull requests should have 100% code coverage.
 
 ## Credits
 
-Originally inspired by [limiter](https://github.com/jhurliman/node-rate-limiter)
+Originally inspired by [limiter](https://github.com/jhurliman/node-rate-limiter).
 
 ## License
 
 The MIT License (MIT)
 
-Copyright 2015 Jesús Carrera
+Copyright 2015 Jesús Carrera - [frontendmatters.com](http://frontendmatters.com)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

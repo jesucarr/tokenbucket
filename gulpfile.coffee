@@ -5,10 +5,10 @@ coffee = require 'gulp-coffee'
 istanbul = require 'gulp-istanbul'
 mocha = require 'gulp-mocha'
 plumber = require 'gulp-plumber'
-jsdoc2md = require("jsdoc-to-markdown")
-concat = require("gulp-concat")
-fs = require("fs")
-coveralls = require('gulp-coveralls')
+jsdoc2md = require 'jsdoc-to-markdown'
+concat = require 'gulp-concat'
+fs = require 'fs'
+coveralls = require 'gulp-coveralls'
 
 onError = (err) ->
   gutil.beep()
@@ -29,22 +29,21 @@ gulp.task 'test', ['coffee'], ->
         .pipe mocha
           reporter: 'spec'
           compilers: 'coffee:coffee-script'
-          timeout: 3000
         .pipe istanbul.writeReports() # Creating the reports after tests run
 
 gulp.task 'coveralls', ->
   gulp.src('coverage/lcov.info')
     .pipe(coveralls())
 
-gulp.task "doc", ->
-  src = "lib/**/*.js"
-  dest = "README.md"
+gulp.task 'doc', ->
+  src = 'lib/**/*.js'
+  dest = 'README.md'
   options = { template: 'README.hbs'}
 
-  gutil.log("writing documentation to " + dest)
+  gutil.log('writing documentation to ' + dest)
   return jsdoc2md.render(src, options)
-      .on "error", (err) ->
-        gutil.log(gutil.colors.red("jsdoc2md failed"), err.message)
+      .on 'error', (err) ->
+        gutil.log(gutil.colors.red('jsdoc2md failed'), err.message)
       .pipe(fs.createWriteStream(dest))
 
 gulp.task 'watch', ->
