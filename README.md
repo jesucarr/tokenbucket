@@ -27,10 +27,10 @@ var tokenBucket = new TokenBucket();
 * [tokenbucket](#module_tokenbucket)
   * [TokenBucket](#exp_module_tokenbucket--TokenBucket) ⏏
     * [new TokenBucket([options])](#new_module_tokenbucket--TokenBucket_new)
-    * [.removeTokens(tokensToRemove)](#module_tokenbucket--TokenBucket#removeTokens) ⇒ <code>Promise</code>
+    * [.removeTokens(tokensToRemove)](#module_tokenbucket--TokenBucket#removeTokens) ⇒ <code>[Promise](https://github.com/petkaantonov/bluebird)</code>
     * [.removeTokensSync(tokensToRemove)](#module_tokenbucket--TokenBucket#removeTokensSync) ⇒ <code>Boolean</code>
-    * [.save()](#module_tokenbucket--TokenBucket#save) ⇒ <code>Promise</code>
-    * [.loadSaved()](#module_tokenbucket--TokenBucket#loadSaved) ⇒ <code>Promise</code>
+    * [.save()](#module_tokenbucket--TokenBucket#save) ⇒ <code>[Promise](https://github.com/petkaantonov/bluebird)</code>
+    * [.loadSaved()](#module_tokenbucket--TokenBucket#loadSaved) ⇒ <code>[Promise](https://github.com/petkaantonov/bluebird)</code>
 
 <a name="exp_module_tokenbucket--TokenBucket"></a>
 ### TokenBucket ⏏
@@ -112,11 +112,11 @@ var tokenBucket = new TokenBucket({
 });
 ```
 <a name="module_tokenbucket--TokenBucket#removeTokens"></a>
-#### tokenBucket.removeTokens(tokensToRemove) ⇒ <code>Promise</code>
+#### tokenBucket.removeTokens(tokensToRemove) ⇒ <code>[Promise](https://github.com/petkaantonov/bluebird)</code>
 Remove the requested number of tokens. If the bucket (and any parent buckets) contains enough tokens this will happen immediately. Otherwise, it will wait to get enough tokens.
 
 **Kind**: instance method of <code>[TokenBucket](#exp_module_tokenbucket--TokenBucket)</code>  
-**Returns**: <code>Promise</code> - On success the promise will be resolved with the remaining tokens number, taking into account the parent if it has it. On error will be rejected with an `Error`.
+**Returns**: <code>[Promise](https://github.com/petkaantonov/bluebird)</code> - On success the promise will be resolved with the remaining tokens number, taking into account the parent if it has it. On error will be rejected with an `Error`.
 Operational errors will be returned with the following `name` property, so they can be handled accordingly:
 * `'NotEnoughSize'` - The requested tokens are greater than the bucket size.
 * `'NoInfinityRemoval'` - It is not possible to remove infinite tokens, because even if the bucket has infinite size, the `tokensLeft` would be indeterminant.
@@ -160,11 +160,11 @@ if (tokenBucket.removeTokensSync(50)) {
 }
 ```
 <a name="module_tokenbucket--TokenBucket#save"></a>
-#### tokenBucket.save() ⇒ <code>Promise</code>
+#### tokenBucket.save() ⇒ <code>[Promise](https://github.com/petkaantonov/bluebird)</code>
 Saves the bucket lastFill and tokensLeft to Redis. If it has any parents with `redis` options, they will get saved too.
 
 **Kind**: instance method of <code>[TokenBucket](#exp_module_tokenbucket--TokenBucket)</code>  
-**Returns**: <code>Promise</code> - On success the promise will be resolved without parameters. On error will be rejected with an `Error`.
+**Returns**: <code>[Promise](https://github.com/petkaantonov/bluebird)</code> - On success the promise will be resolved without parameters. On error will be rejected with an `Error`.
 If we call this function and we didn't set the redis options, the error will have `'NoRedisOptions'` as the `name` property, so it can be handled specifically.
 If there is an error with Redis it will be rejected with the error returned by Redis.  
 **Example**  
@@ -191,17 +191,14 @@ tokenBucket.loadSaved().then(function () {
 });
 ```
 <a name="module_tokenbucket--TokenBucket#loadSaved"></a>
-#### tokenBucket.loadSaved() ⇒ <code>Promise</code>
+#### tokenBucket.loadSaved() ⇒ <code>[Promise](https://github.com/petkaantonov/bluebird)</code>
 Loads the bucket lastFill and tokensLeft as it was saved in Redis. If it has any parents with `redis` options, they will get loaded too.
 
 **Kind**: instance method of <code>[TokenBucket](#exp_module_tokenbucket--TokenBucket)</code>  
-**Returns**: <code>Promise</code> - On success the promise will be resolved without parameters. On error will be rejected with an `Error`.
+**Returns**: <code>[Promise](https://github.com/petkaantonov/bluebird)</code> - On success the promise will be resolved without parameters. On error will be rejected with an `Error`.
 If we call this function and we didn't set the redis options, the error will have `'NoRedisOptions'` as the `name` property, so it can be handled specifically.
 If there is an error with Redis it will be rejected with the error returned by Redis.  
-**Example**  
-```js
-See [save()](#TokenBucket#save)
-```
+**See**: [save](#module_tokenbucket--TokenBucket#save)  
 
 ## Testing
 
