@@ -5,10 +5,11 @@ coffee = require 'gulp-coffee'
 istanbul = require 'gulp-istanbul'
 mocha = require 'gulp-mocha'
 plumber = require 'gulp-plumber'
-jsdoc2md = require 'jsdoc-to-markdown'
 concat = require 'gulp-concat'
 fs = require 'fs'
 coveralls = require 'gulp-coveralls'
+gulpJsdoc2md = require 'gulp-jsdoc-to-markdown'
+concat = require 'gulp-concat'
 
 onError = (err) ->
   gutil.beep()
@@ -36,15 +37,12 @@ gulp.task 'coveralls', ->
     .pipe(coveralls())
 
 gulp.task 'doc', ->
-  src = 'lib/**/*.js'
-  dest = 'README.md'
-  options = { template: 'README.hbs'}
-
-  gutil.log('writing documentation to ' + dest)
-  return jsdoc2md.render(src, options)
-      .on 'error', (err) ->
-        gutil.log(gutil.colors.red('jsdoc2md failed'), err.message)
-      .pipe(fs.createWriteStream(dest))
+    gulp.src('lib/**/*.js')
+        .pipe(concat('README.md'))
+        .pipe(gulpJsdoc2md({ template: fs.readFileSync('README.hbs', 'utf8') }))
+        .on 'error', (err) ->
+            gutil.log('jsdoc2md failed:', err.message)
+        .pipe(gulp.dest('.'))
 
 gulp.task 'watch', ->
   gulp.watch 'src/**/*.coffee', ['coffee']
