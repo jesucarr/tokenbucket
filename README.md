@@ -199,8 +199,9 @@ Loads the bucket lastFill and tokensLeft as it was saved in Redis. If it has any
 If we call this function and we didn't set the redis options, the error will have `'NoRedisOptions'` as the `name` property, so it can be handled specifically.
 If there is an error with Redis it will be rejected with the error returned by Redis.  
 **Example**  
+```js
 See [save()](#TokenBucket#save)
-
+```
 
 ## Testing
 
