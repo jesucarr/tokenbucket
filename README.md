@@ -114,13 +114,13 @@ var tokenBucket = new TokenBucket({
 <a name="module_tokenbucket--TokenBucket#removeTokens"></a>
 #### tokenBucket.removeTokens(tokensToRemove) ⇒ <code>[Promise](https://github.com/petkaantonov/bluebird)</code>
 Remove the requested number of tokens. If the bucket (and any parent buckets) contains enough tokens this will happen immediately. Otherwise, it will wait to get enough tokens.
+Operational errors will be returned with the following `name` property, so they can be handled accordingly:
+- `'NotEnoughSize'` - The requested tokens are greater than the bucket size.
+- `'NoInfinityRemoval'` - It is not possible to remove infinite tokens, because even if the bucket has infinite size, the `tokensLeft` would be indeterminant.
+- `'ExceedsMaxWait'` - The time we need to wait to be able to remove the tokens requested exceed the time set in `maxWait` configuration (parent or child).
 
 **Kind**: instance method of <code>[TokenBucket](#exp_module_tokenbucket--TokenBucket)</code>  
-**Returns**: <code>[Promise](https://github.com/petkaantonov/bluebird)</code> - On success the promise will be resolved with the remaining tokens number, taking into account the parent if it has it. On error will be rejected with an `Error`.
-Operational errors will be returned with the following `name` property, so they can be handled accordingly:
-* `'NotEnoughSize'` - The requested tokens are greater than the bucket size.
-* `'NoInfinityRemoval'` - It is not possible to remove infinite tokens, because even if the bucket has infinite size, the `tokensLeft` would be indeterminant.
-* `'ExceedsMaxWait'` - The time we need to wait to be able to remove the tokens requested exceed the time set in `maxWait` configuration (parent or child).  
+**Returns**: <code>[Promise](https://github.com/petkaantonov/bluebird)</code> - On success the promise will be resolved with the remaining tokens number, taking into account the parent if it has it. On error will be rejected with an `Error`.  
 **Fulfil**: <code>Number</code> - the remaining tokens number  
 **Reject**: <code>Error</code>  
 
@@ -169,7 +169,7 @@ Saves the bucket lastFill and tokensLeft to Redis. If it has any parents with `r
 **Returns**: <code>[Promise](https://github.com/petkaantonov/bluebird)</code> - On success the promise will be resolved without parameters. On error will be rejected with an `Error`.
 If we call this function and we didn't set the redis options, the error will have `'NoRedisOptions'` as the `name` property, so it can be handled specifically.
 If there is an error with Redis it will be rejected with the error returned by Redis.  
-**Fulfil**: <code></code>fulfilled with no value  
+**Fulfil**: fulfilled with no value  
 **Reject**: <code>Error</code>  
 **Example**  
 We have a worker process that uses 1 API requests, so we would need to remove 1 token (default) from our rate limiter bucket.
@@ -202,7 +202,7 @@ Loads the bucket lastFill and tokensLeft as it was saved in Redis. If it has any
 **Returns**: <code>[Promise](https://github.com/petkaantonov/bluebird)</code> - On success the promise will be resolved without parameters. On error will be rejected with an `Error`.
 If we call this function and we didn't set the redis options, the error will have `'NoRedisOptions'` as the `name` property, so it can be handled specifically.
 If there is an error with Redis it will be rejected with the error returned by Redis.  
-**Fulfil**: <code></code>fulfilled with no value  
+**Fulfil**: fulfilled with no value  
 **Reject**: <code>Error</code>  
 **See**: [save](#module_tokenbucket--TokenBucket#save)  
 
