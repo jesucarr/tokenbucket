@@ -336,8 +336,8 @@ class TokenBucket
     * @returns {Promise} On success the promise will be resolved without parameters. On error will be rejected with an `Error`.
     * If we call this function and we didn't set the redis options, the error will have `'NoRedisOptions'` as the `name` property, so it can be handled specifically.
     * If there is an error with Redis it will be rejected with the error returned by Redis.
-    * @example
-    * See [save()](#TokenBucket#save)
+    * **Example**
+    * See {@link module:tokenbucket#save}
   ###
   loadSaved: =>
     resolver = Promise.pending()

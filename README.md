@@ -160,11 +160,11 @@ if (tokenBucket.removeTokensSync(50)) {
 }
 ```
 <a name="module_tokenbucket--TokenBucket#save"></a>
-#### tokenBucket.save() ⇒ <code>Promise</code>
+#### tokenBucket.save() ⇒ <code>[Promise](https://github.com/petkaantonov/bluebird)</code>
 Saves the bucket lastFill and tokensLeft to Redis. If it has any parents with `redis` options, they will get saved too.
 
 **Kind**: instance method of <code>[TokenBucket](#exp_module_tokenbucket--TokenBucket)</code>  
-**Returns**: <code>Promise</code> - On success the promise will be resolved without parameters. On error will be rejected with an `Error`.
+**Returns**: <code>[Promise](https://github.com/petkaantonov/bluebird)</code> - On success the promise will be resolved without parameters. On error will be rejected with an `Error`.
 If we call this function and we didn't set the redis options, the error will have `'NoRedisOptions'` as the `name` property, so it can be handled specifically.
 If there is an error with Redis it will be rejected with the error returned by Redis.  
 **Example**  
