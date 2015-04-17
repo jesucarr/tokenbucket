@@ -27,10 +27,10 @@ var tokenBucket = new TokenBucket();
 * [tokenbucket](#module_tokenbucket)
   * [TokenBucket](#exp_module_tokenbucket--TokenBucket) ⏏
     * [new TokenBucket([options])](#new_module_tokenbucket--TokenBucket_new)
-    * [.removeTokens(tokensToRemove)](#module_tokenbucket--TokenBucket#removeTokens) ⇒ <code>Promise</code>
+    * [.removeTokens(tokensToRemove)](#module_tokenbucket--TokenBucket#removeTokens) ⇒ <code>[Promise](https://github.com/petkaantonov/bluebird)</code>
     * [.removeTokensSync(tokensToRemove)](#module_tokenbucket--TokenBucket#removeTokensSync) ⇒ <code>Boolean</code>
-    * [.save()](#module_tokenbucket--TokenBucket#save) ⇒ <code>Promise</code>
-    * [.loadSaved()](#module_tokenbucket--TokenBucket#loadSaved) ⇒ <code>Promise</code>
+    * [.save()](#module_tokenbucket--TokenBucket#save) ⇒ <code>[Promise](https://github.com/petkaantonov/bluebird)</code>
+    * [.loadSaved()](#module_tokenbucket--TokenBucket#loadSaved) ⇒ <code>[Promise](https://github.com/petkaantonov/bluebird)</code>
 
 <a name="exp_module_tokenbucket--TokenBucket"></a>
 ### TokenBucket ⏏
@@ -52,7 +52,7 @@ The class that the module exports and that instantiate a new token bucket with t
 | [options.maxWait] | <code>Number</code> &#124; <code>String</code> |  | The maximum time that we would wait for enough tokens to be added, in milliseconds or as one of the following strings: 'second', 'minute', 'hour', day'. If any of the parents in the hierarchy has `maxWait`, we will use the smallest value. |
 | [options.redis] | <code>Object</code> |  | Options object for Redis |
 | options.redis.bucketName | <code>String</code> |  | The name of the bucket to reference it in Redis. Must be unique. |
-| options.redis.redisClient | <code>String</code> |  | The [Redis client](https://github.com/mranney/node_redis) to save the bucket. |
+| options.redis.redisClient | <code>[redisClient](https://github.com/mranney/node_redis#rediscreateclient)</code> |  | The [Redis client](https://github.com/mranney/node_redis#rediscreateclient) to save the bucket. |
 | [options.parentBucket] | <code>TokenBucket</code> |  | A token bucket that will act as the parent of this bucket. Tokens removed in the children, will also be removed in the parent, and if the parent reach its limit, the children will get limited too. This options will be properties of the class instances. The properties `tokensLeft` and `lastFill` will get updated when we add/remove tokens. |
 
 **Example**  
@@ -112,15 +112,17 @@ var tokenBucket = new TokenBucket({
 });
 ```
 <a name="module_tokenbucket--TokenBucket#removeTokens"></a>
-#### tokenBucket.removeTokens(tokensToRemove) ⇒ <code>Promise</code>
+#### tokenBucket.removeTokens(tokensToRemove) ⇒ <code>[Promise](https://github.com/petkaantonov/bluebird)</code>
 Remove the requested number of tokens. If the bucket (and any parent buckets) contains enough tokens this will happen immediately. Otherwise, it will wait to get enough tokens.
 
-**Kind**: instance method of <code>[TokenBucket](#exp_module_tokenbucket--TokenBucket)</code>  
-**Returns**: <code>Promise</code> - On success the promise will be resolved with the remaining tokens number, taking into account the parent if it has it. On error will be rejected with an `Error`.
 Operational errors will be returned with the following `name` property, so they can be handled accordingly:
 * `'NotEnoughSize'` - The requested tokens are greater than the bucket size.
 * `'NoInfinityRemoval'` - It is not possible to remove infinite tokens, because even if the bucket has infinite size, the `tokensLeft` would be indeterminant.
-* `'ExceedsMaxWait'` - The time we need to wait to be able to remove the tokens requested exceed the time set in `maxWait` configuration (parent or child).  
+* `'ExceedsMaxWait'` - The time we need to wait to be able to remove the tokens requested exceed the time set in `maxWait` configuration (parent or child).
+
+**Kind**: instance method of <code>[TokenBucket](#exp_module_tokenbucket--TokenBucket)</code>  
+**Fulfil**: <code>Number</code> - The remaining tokens number, taking into account the parent if it has it.  
+**Reject**: <code>Error</code> - See description for the different operational errors, and the example with how to handle them.  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -160,13 +162,15 @@ if (tokenBucket.removeTokensSync(50)) {
 }
 ```
 <a name="module_tokenbucket--TokenBucket#save"></a>
-#### tokenBucket.save() ⇒ <code>Promise</code>
+#### tokenBucket.save() ⇒ <code>[Promise](https://github.com/petkaantonov/bluebird)</code>
 Saves the bucket lastFill and tokensLeft to Redis. If it has any parents with `redis` options, they will get saved too.
 
-**Kind**: instance method of <code>[TokenBucket](#exp_module_tokenbucket--TokenBucket)</code>  
-**Returns**: <code>Promise</code> - On success the promise will be resolved without parameters. On error will be rejected with an `Error`.
 If we call this function and we didn't set the redis options, the error will have `'NoRedisOptions'` as the `name` property, so it can be handled specifically.
-If there is an error with Redis it will be rejected with the error returned by Redis.  
+If there is an error with Redis it will be rejected with the error returned by Redis.
+
+**Kind**: instance method of <code>[TokenBucket](#exp_module_tokenbucket--TokenBucket)</code>  
+**Fulfil**: <code>true</code>  
+**Reject**: <code>Error</code> - See description for the operational error, and the example with how to handle it.  
 **Example**  
 We have a worker process that uses 1 API requests, so we would need to remove 1 token (default) from our rate limiter bucket.
 If we had to wait more than the specified `maxWait` to get enough tokens, we would end the worker process.
@@ -191,16 +195,17 @@ tokenBucket.loadSaved().then(function () {
 });
 ```
 <a name="module_tokenbucket--TokenBucket#loadSaved"></a>
-#### tokenBucket.loadSaved() ⇒ <code>Promise</code>
+#### tokenBucket.loadSaved() ⇒ <code>[Promise](https://github.com/petkaantonov/bluebird)</code>
 Loads the bucket lastFill and tokensLeft as it was saved in Redis. If it has any parents with `redis` options, they will get loaded too.
 
-**Kind**: instance method of <code>[TokenBucket](#exp_module_tokenbucket--TokenBucket)</code>  
-**Returns**: <code>Promise</code> - On success the promise will be resolved without parameters. On error will be rejected with an `Error`.
 If we call this function and we didn't set the redis options, the error will have `'NoRedisOptions'` as the `name` property, so it can be handled specifically.
-If there is an error with Redis it will be rejected with the error returned by Redis.  
-**Example**  
-See [save()](#TokenBucket#save)
+If there is an error with Redis it will be rejected with the error returned by Redis.
 
+**Kind**: instance method of <code>[TokenBucket](#exp_module_tokenbucket--TokenBucket)</code>  
+**Fulfil**: <code>true</code>  
+**Reject**: <code>Error</code> - See description for the operational error, and the example with how to handle it.  
+**Example**  
+See [save](#module_tokenbucket--TokenBucket#save) ``` ```
 
 ## Testing
 
