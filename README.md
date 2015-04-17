@@ -52,7 +52,7 @@ The class that the module exports and that instantiate a new token bucket with t
 | [options.maxWait] | <code>Number</code> &#124; <code>String</code> |  | The maximum time that we would wait for enough tokens to be added, in milliseconds or as one of the following strings: 'second', 'minute', 'hour', day'. If any of the parents in the hierarchy has `maxWait`, we will use the smallest value. |
 | [options.redis] | <code>Object</code> |  | Options object for Redis |
 | options.redis.bucketName | <code>String</code> |  | The name of the bucket to reference it in Redis. Must be unique. |
-| options.redis.redisClient | <code>String</code> |  | The [Redis client](https://github.com/mranney/node_redis) to save the bucket. |
+| options.redis.redisClient | <code>[redisClient](https://github.com/mranney/node_redis#rediscreateclient)</code> |  | The [Redis client](https://github.com/mranney/node_redis#rediscreateclient) to save the bucket. |
 | [options.parentBucket] | <code>TokenBucket</code> |  | A token bucket that will act as the parent of this bucket. Tokens removed in the children, will also be removed in the parent, and if the parent reach its limit, the children will get limited too. This options will be properties of the class instances. The properties `tokensLeft` and `lastFill` will get updated when we add/remove tokens. |
 
 **Example**  

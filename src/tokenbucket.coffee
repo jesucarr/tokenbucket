@@ -35,7 +35,7 @@ Promise = require 'bluebird'
   * @param {Number|String} [options.maxWait] - The maximum time that we would wait for enough tokens to be added, in milliseconds or as one of the following strings: 'second', 'minute', 'hour', day'. If any of the parents in the hierarchy has `maxWait`, we will use the smallest value.
   * @param {Object} [options.redis] - Options object for Redis
   * @param {String} options.redis.bucketName - The name of the bucket to reference it in Redis. Must be unique.
-  * @param {String} options.redis.redisClient - The [Redis client](https://github.com/mranney/node_redis) to save the bucket.
+  * @param {external:redisClient} options.redis.redisClient - The [Redis client](https://github.com/mranney/node_redis#rediscreateclient) to save the bucket.
   * @param {TokenBucket} [options.parentBucket] - A token bucket that will act as the parent of this bucket. Tokens removed in the children, will also be removed in the parent, and if the parent reach its limit, the children will get limited too.
   *
   * This options will be properties of the class instances. The properties `tokensLeft` and `lastFill` will get updated when we add/remove tokens.
@@ -365,4 +365,8 @@ module.exports = TokenBucket
 ###*
   * @external Promise
   * @see https://github.com/petkaantonov/bluebird
+###
+###*
+  * @external redisClient
+  * @see https://github.com/mranney/node_redis#rediscreateclient
 ###
