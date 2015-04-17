@@ -150,7 +150,7 @@ class TokenBucket
   ###*
     * @desc Remove the requested number of tokens. If the bucket (and any parent buckets) contains enough tokens this will happen immediately. Otherwise, it will wait to get enough tokens.
     * @param {Number} tokensToRemove - The number of tokens to remove.
-    * @returns {Promise} On success the promise will be resolved with the remaining tokens number, taking into account the parent if it has it. On error will be rejected with an `Error`.
+    * @returns {external:Promise} On success the promise will be resolved with the remaining tokens number, taking into account the parent if it has it. On error will be rejected with an `Error`.
     * Operational errors will be returned with the following `name` property, so they can be handled accordingly:
     * * `'NotEnoughSize'` - The requested tokens are greater than the bucket size.
     * * `'NoInfinityRemoval'` - It is not possible to remove infinite tokens, because even if the bucket has infinite size, the `tokensLeft` would be indeterminant.
@@ -284,7 +284,7 @@ class TokenBucket
 
   ###*
     * @desc Saves the bucket lastFill and tokensLeft to Redis. If it has any parents with `redis` options, they will get saved too.
-    * @returns {Promise} On success the promise will be resolved without parameters. On error will be rejected with an `Error`.
+    * @returns {external:Promise} On success the promise will be resolved without parameters. On error will be rejected with an `Error`.
     * If we call this function and we didn't set the redis options, the error will have `'NoRedisOptions'` as the `name` property, so it can be handled specifically.
     * If there is an error with Redis it will be rejected with the error returned by Redis.
     *
@@ -333,7 +333,7 @@ class TokenBucket
 
   ###*
     * @desc Loads the bucket lastFill and tokensLeft as it was saved in Redis. If it has any parents with `redis` options, they will get loaded too.
-    * @returns {Promise} On success the promise will be resolved without parameters. On error will be rejected with an `Error`.
+    * @returns {external:Promise} On success the promise will be resolved without parameters. On error will be rejected with an `Error`.
     * If we call this function and we didn't set the redis options, the error will have `'NoRedisOptions'` as the `name` property, so it can be handled specifically.
     * If there is an error with Redis it will be rejected with the error returned by Redis.
     * **Example**
@@ -361,3 +361,8 @@ class TokenBucket
     resolver.promise
 
 module.exports = TokenBucket
+
+###*
+  * @external Promise
+  * @see https://github.com/petkaantonov/bluebird
+###
