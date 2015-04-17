@@ -115,12 +115,14 @@ var tokenBucket = new TokenBucket({
 #### tokenBucket.removeTokens(tokensToRemove) ⇒ <code>[Promise](https://github.com/petkaantonov/bluebird)</code>
 Remove the requested number of tokens. If the bucket (and any parent buckets) contains enough tokens this will happen immediately. Otherwise, it will wait to get enough tokens.
 
-**Kind**: instance method of <code>[TokenBucket](#exp_module_tokenbucket--TokenBucket)</code>  
-**Returns**: <code>[Promise](https://github.com/petkaantonov/bluebird)</code> - On success the promise will be resolved with the remaining tokens number, taking into account the parent if it has it. On error will be rejected with an `Error`.
 Operational errors will be returned with the following `name` property, so they can be handled accordingly:
 * `'NotEnoughSize'` - The requested tokens are greater than the bucket size.
 * `'NoInfinityRemoval'` - It is not possible to remove infinite tokens, because even if the bucket has infinite size, the `tokensLeft` would be indeterminant.
-* `'ExceedsMaxWait'` - The time we need to wait to be able to remove the tokens requested exceed the time set in `maxWait` configuration (parent or child).  
+* `'ExceedsMaxWait'` - The time we need to wait to be able to remove the tokens requested exceed the time set in `maxWait` configuration (parent or child).
+
+**Kind**: instance method of <code>[TokenBucket](#exp_module_tokenbucket--TokenBucket)</code>  
+**Fulfil**: <code>Number</code> - The remaining tokens number, taking into account the parent if it has it.  
+**Reject**: <code>Error</code> - See description for the different operational errors, and the example with how to handle them.  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -163,10 +165,12 @@ if (tokenBucket.removeTokensSync(50)) {
 #### tokenBucket.save() ⇒ <code>[Promise](https://github.com/petkaantonov/bluebird)</code>
 Saves the bucket lastFill and tokensLeft to Redis. If it has any parents with `redis` options, they will get saved too.
 
-**Kind**: instance method of <code>[TokenBucket](#exp_module_tokenbucket--TokenBucket)</code>  
-**Returns**: <code>[Promise](https://github.com/petkaantonov/bluebird)</code> - On success the promise will be resolved without parameters. On error will be rejected with an `Error`.
 If we call this function and we didn't set the redis options, the error will have `'NoRedisOptions'` as the `name` property, so it can be handled specifically.
-If there is an error with Redis it will be rejected with the error returned by Redis.  
+If there is an error with Redis it will be rejected with the error returned by Redis.
+
+**Kind**: instance method of <code>[TokenBucket](#exp_module_tokenbucket--TokenBucket)</code>  
+**Fulfil**: <code>true</code>  
+**Reject**: <code>Error</code> - See description for the operational error, and the example with how to handle it.  
 **Example**  
 We have a worker process that uses 1 API requests, so we would need to remove 1 token (default) from our rate limiter bucket.
 If we had to wait more than the specified `maxWait` to get enough tokens, we would end the worker process.
@@ -194,12 +198,14 @@ tokenBucket.loadSaved().then(function () {
 #### tokenBucket.loadSaved() ⇒ <code>[Promise](https://github.com/petkaantonov/bluebird)</code>
 Loads the bucket lastFill and tokensLeft as it was saved in Redis. If it has any parents with `redis` options, they will get loaded too.
 
-**Kind**: instance method of <code>[TokenBucket](#exp_module_tokenbucket--TokenBucket)</code>  
-**Returns**: <code>[Promise](https://github.com/petkaantonov/bluebird)</code> - On success the promise will be resolved without parameters. On error will be rejected with an `Error`.
 If we call this function and we didn't set the redis options, the error will have `'NoRedisOptions'` as the `name` property, so it can be handled specifically.
 If there is an error with Redis it will be rejected with the error returned by Redis.
-**Example**
-See [save](#module_tokenbucket--TokenBucket#save)  
+
+**Kind**: instance method of <code>[TokenBucket](#exp_module_tokenbucket--TokenBucket)</code>  
+**Fulfil**: <code>true</code>  
+**Reject**: <code>Error</code> - See description for the operational error, and the example with how to handle it.  
+**Example**  
+See [save](#module_tokenbucket--TokenBucket#save) ``` ```
 
 ## Testing
 

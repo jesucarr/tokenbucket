@@ -149,12 +149,15 @@ class TokenBucket
 
   ###*
     * @desc Remove the requested number of tokens. If the bucket (and any parent buckets) contains enough tokens this will happen immediately. Otherwise, it will wait to get enough tokens.
-    * @param {Number} tokensToRemove - The number of tokens to remove.
-    * @returns {external:Promise} On success the promise will be resolved with the remaining tokens number, taking into account the parent if it has it. On error will be rejected with an `Error`.
+    *
     * Operational errors will be returned with the following `name` property, so they can be handled accordingly:
     * * `'NotEnoughSize'` - The requested tokens are greater than the bucket size.
     * * `'NoInfinityRemoval'` - It is not possible to remove infinite tokens, because even if the bucket has infinite size, the `tokensLeft` would be indeterminant.
     * * `'ExceedsMaxWait'` - The time we need to wait to be able to remove the tokens requested exceed the time set in `maxWait` configuration (parent or child).
+    * @param {Number} tokensToRemove - The number of tokens to remove.
+    * @returns {external:Promise}
+    * @fulfil {Number} - The remaining tokens number, taking into account the parent if it has it.
+    * @reject {Error} - See description for the different operational errors, and the example with how to handle them.
     *
     * @example
     * We have some code that uses 3 API requests, so we would need to remove 3 tokens from our rate limiter bucket.
@@ -223,7 +226,7 @@ class TokenBucket
     wait = =>
       waitResolver = Promise.pending()
       setTimeout ->
-        waitResolver.resolve()
+        waitResolver.resolve(true)
       , bucketWaitInterval
       waitResolver.promise
     # If we don't have enough tokens in this bucket, wait to get them
@@ -284,10 +287,12 @@ class TokenBucket
 
   ###*
     * @desc Saves the bucket lastFill and tokensLeft to Redis. If it has any parents with `redis` options, they will get saved too.
-    * @returns {external:Promise} On success the promise will be resolved without parameters. On error will be rejected with an `Error`.
+    *
     * If we call this function and we didn't set the redis options, the error will have `'NoRedisOptions'` as the `name` property, so it can be handled specifically.
     * If there is an error with Redis it will be rejected with the error returned by Redis.
-    *
+    * @returns {external:Promise}
+    * @fulfil {true}
+    * @reject {Error} - See description for the operational error, and the example with how to handle it.
     * @example
     * We have a worker process that uses 1 API requests, so we would need to remove 1 token (default) from our rate limiter bucket.
     * If we had to wait more than the specified `maxWait` to get enough tokens, we would end the worker process.
@@ -324,7 +329,7 @@ class TokenBucket
           if err
             resolver.reject new Error err
           else
-            resolver.resolve()
+            resolver.resolve(true)
       if @parentBucket and @parentBucket.redis?
         return @parentBucket.save().then set
       else
@@ -333,11 +338,14 @@ class TokenBucket
 
   ###*
     * @desc Loads the bucket lastFill and tokensLeft as it was saved in Redis. If it has any parents with `redis` options, they will get loaded too.
-    * @returns {external:Promise} On success the promise will be resolved without parameters. On error will be rejected with an `Error`.
+    *
     * If we call this function and we didn't set the redis options, the error will have `'NoRedisOptions'` as the `name` property, so it can be handled specifically.
     * If there is an error with Redis it will be rejected with the error returned by Redis.
-    * **Example**
-    * See {@link module:tokenbucket#save}
+    * @returns {external:Promise}
+    * @fulfil {true}
+    * @reject {Error} - See description for the operational error, and the example with how to handle it.
+    * @example
+    * See {@link module:tokenbucket#save} ``` ```
   ###
   loadSaved: =>
     resolver = Promise.pending()
@@ -353,7 +361,7 @@ class TokenBucket
           else
             @lastFill = +reply[0] if reply[0]
             @tokensLeft = +reply[1] if reply[1]
-            resolver.resolve()
+            resolver.resolve(true)
       if @parentBucket and @parentBucket.redis?
         return @parentBucket.loadSaved().then get
       else
