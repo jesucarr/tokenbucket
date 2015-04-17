@@ -9,7 +9,6 @@ concat = require 'gulp-concat'
 fs = require 'fs'
 coveralls = require 'gulp-coveralls'
 gulpJsdoc2md = require 'gulp-jsdoc-to-markdown'
-concat = require 'gulp-concat'
 
 onError = (err) ->
   gutil.beep()
@@ -22,27 +21,27 @@ gulp.task 'coffee', ->
     .pipe gulp.dest './lib/'
 
 gulp.task 'test', ['coffee'], ->
-  gulp.src ['lib/**/*.js']
-    .pipe(istanbul()) # Covering files
-    .pipe(istanbul.hookRequire()) # Force `require` to return covered files
+  gulp.src 'lib/**/*.js'
+    .pipe istanbul() # Covering files
+    .pipe istanbul.hookRequire() # Force `require` to return covered files
     .on 'finish', ->
-      gulp.src(['test/**/*.spec.coffee'])
+      gulp.src 'test/**/*.spec.coffee'
         .pipe mocha
           reporter: 'spec'
           compilers: 'coffee:coffee-script'
         .pipe istanbul.writeReports() # Creating the reports after tests run
 
 gulp.task 'coveralls', ->
-  gulp.src('coverage/lcov.info')
-    .pipe(coveralls())
+  gulp.src 'coverage/lcov.info'
+    .pipe coveralls()
 
 gulp.task 'doc', ->
-    gulp.src('lib/**/*.js')
-        .pipe(concat('README.md'))
-        .pipe(gulpJsdoc2md({ template: fs.readFileSync('README.hbs', 'utf8') }))
-        .on 'error', (err) ->
-            gutil.log('jsdoc2md failed:', err.message)
-        .pipe(gulp.dest('.'))
+  gulp.src 'lib/**/*.js'
+    .pipe concat('README.md')
+    .pipe gulpJsdoc2md({template: fs.readFileSync('README.hbs', 'utf8')})
+    .on 'error', (err) ->
+      gutil.log 'jsdoc2md failed:', err.message
+    .pipe gulp.dest('.')
 
 gulp.task 'watch', ->
   gulp.watch 'src/**/*.coffee', ['coffee']
