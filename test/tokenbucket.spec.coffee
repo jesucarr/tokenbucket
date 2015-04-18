@@ -96,6 +96,56 @@ describe 'a default tokenbucket', ->
         expect(err.message).eql 'Requested tokens (2) exceed bucket size (1)'
         done()
 
+describe 'a tokenbucket with redis options', ->
+  it 'removes redis if bucketName is not set', ->
+    bucket = new TokenBucket
+      redis:
+        redisClient: 'fakeRedisClient'
+        redisClientConfig:
+          port: 1000
+    expect(bucket.redis).undefined
+  it 'removes redisClientConfig if redisClient is set', ->
+    bucket = new TokenBucket
+      redis:
+        bucketName: 'bucket1'
+        redisClient: 'fakeRedisClient'
+        redisClientConfig:
+          port: 1000
+    expect(bucket.redis.redisClientConfig).undefined
+  it 'sets redisClientConfig defaults', ->
+    bucket = new TokenBucket
+      redis:
+        bucketName: 'bucket1'
+    expect(bucket.redis.redisClientConfig.port).eql 6379
+    expect(bucket.redis.redisClientConfig.host).eql '127.0.0.1'
+    expect(bucket.redis.redisClientConfig.unixSocket).undefined
+    expect(bucket.redis.redisClientConfig.options).exists
+    bucket.redis.redisClient.end()
+  it 'sets redisClientConfig as defined', ->
+    bucket = new TokenBucket
+      redis:
+        bucketName: 'bucket1'
+        redisClientConfig:
+          port: 6379
+          host: 'localhost'
+          options:
+            max_attempts: 10
+    expect(bucket.redis.redisClientConfig.port).eql 6379
+    expect(bucket.redis.redisClientConfig.host).eql 'localhost'
+    expect(bucket.redis.redisClientConfig.unixSocket).undefined
+    expect(bucket.redis.redisClientConfig.options.max_attempts).eql 10
+    bucket.redis.redisClient.end()
+  it 'sets unixSocket if defined, and throws and error for the non existing socket', (done) ->
+    bucket = new TokenBucket
+      redis:
+        bucketName: 'bucket1'
+        redisClientConfig:
+          unixSocket: '/tmp/fakeredis.sock'
+    bucket.redis.redisClient.on 'error', (err) ->
+      expect(err instanceof Error).true
+      bucket.redis.redisClient.end()
+      done()
+
 describe 'a tokenbucket initialized with interval string', ->
   describe 'when string is second', ->
     beforeEach ->
@@ -630,16 +680,6 @@ describe 'saving a tokenbucket', ->
         expect(err.name).eql 'NoRedisOptions'
         expect(err.message).eql 'Redis options missing.'
         done()
-  describe 'when initialized without redis client', ->
-    it 'rejects the promise with the error', (done) ->
-      bucket = new TokenBucket
-        redis:
-          bucketName: 'test'
-      bucket.save().catch (err) ->
-        expect(err instanceof Error).true
-        expect(err.name).eql 'NoRedisOptions'
-        expect(err.message).eql 'Redis options missing.'
-        done()
   describe 'when initialized with the right options', ->
     beforeEach ->
       redisClient = mset: ->
@@ -696,16 +736,6 @@ describe 'load a saved tokenbucket', ->
       bucket = new TokenBucket
         redis:
           redisClient: redisClient
-      bucket.loadSaved().catch (err) ->
-        expect(err instanceof Error).true
-        expect(err.name).eql 'NoRedisOptions'
-        expect(err.message).eql 'Redis options missing.'
-        done()
-  describe 'when initialized without redis client', ->
-    it 'rejects the promise with the right error', (done) ->
-      bucket = new TokenBucket
-        redis:
-          bucketName: 'test'
       bucket.loadSaved().catch (err) ->
         expect(err instanceof Error).true
         expect(err.name).eql 'NoRedisOptions'
