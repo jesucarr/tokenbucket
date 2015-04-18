@@ -50,10 +50,15 @@ The class that the module exports and that instantiate a new token bucket with t
 | [options.tokensLeft] | <code>Number</code> | <code>size</code> | By default it will initialize full of tokens, but you can set here the number of tokens you want to initialize it with. |
 | [options.spread] | <code>Boolean</code> | <code>false</code> | By default it will wait the interval, and then add all the tokensToAddPerInterval at once. If you set this to true, it will insert fractions of tokens at any given time, spreading the token addition along the interval. |
 | [options.maxWait] | <code>Number</code> &#124; <code>String</code> |  | The maximum time that we would wait for enough tokens to be added, in milliseconds or as one of the following strings: 'second', 'minute', 'hour', day'. If any of the parents in the hierarchy has `maxWait`, we will use the smallest value. |
+| [options.parentBucket] | <code>TokenBucket</code> |  | A token bucket that will act as the parent of this bucket. Tokens removed in the children, will also be removed in the parent, and if the parent reach its limit, the children will get limited too. |
 | [options.redis] | <code>Object</code> |  | Options object for Redis |
-| options.redis.bucketName | <code>String</code> |  | The name of the bucket to reference it in Redis. Must be unique. |
-| options.redis.redisClient | <code>[redisClient](https://github.com/mranney/node_redis#rediscreateclient)</code> |  | The [Redis client](https://github.com/mranney/node_redis#rediscreateclient) to save the bucket. |
-| [options.parentBucket] | <code>TokenBucket</code> |  | A token bucket that will act as the parent of this bucket. Tokens removed in the children, will also be removed in the parent, and if the parent reach its limit, the children will get limited too. This options will be properties of the class instances. The properties `tokensLeft` and `lastFill` will get updated when we add/remove tokens. |
+| options.redis.bucketName | <code>String</code> |  | The name of the bucket to reference it in Redis. This is the only required field to set Redis persistance. The `bucketName` for each bucket **must be unique**. |
+| [options.redis.redisClient] | <code>[redisClient](https://github.com/mranney/node_redis#rediscreateclient)</code> |  | The [Redis client](https://github.com/mranney/node_redis#rediscreateclient) to save the bucket. |
+| [options.redis.redisClientConfig] | <code>Object</code> |  | [Redis client configuration](https://github.com/mranney/node_redis#rediscreateclient) to create the Redis client and save the bucket. If the `redisClient` option is set, this option will be ignored. |
+| [options.redis.redisClientConfig.port] | <code>Number</code> | <code>6379</code> | The connection port for the Redis client. See [configuration instructions](https://github.com/mranney/node_redis#rediscreateclient). |
+| [options.redis.redisClientConfig.host] | <code>String</code> | <code>&#x27;127.0.0.1&#x27;</code> | The connection host for the Redis client. See [configuration instructions](https://github.com/mranney/node_redis#rediscreateclient) |
+| [options.redis.redisClientConfig.unixSocket] | <code>String</code> |  | The connection unix socket for the Redis client. See [configuration instructions](https://github.com/mranney/node_redis#rediscreateclient) |
+| [options.redis.redisClientConfig.options] | <code>String</code> |  | The options for the Redis client. See [configuration instructions](https://github.com/mranney/node_redis#rediscreateclient) This options will be properties of the class instances. The properties `tokensLeft` and `lastFill` will get updated when we add/remove tokens. |
 
 **Example**  
 A filled token bucket that can hold 100 tokens, and it will add 30 tokens every minute (all at once).
@@ -100,7 +105,7 @@ var tokenBucket = new TokenBucket({
   parentBucket: parentBucket
 });
 ```
-A token bucket with Redis persistance.
+A token bucket with Redis persistance setting the redis client.
 ```javascript
 redis = require('redis');
 redisClient = redis.redisClient();
@@ -111,6 +116,24 @@ var tokenBucket = new TokenBucket({
   }
 });
 ```
+A token bucket with Redis persistance setting the redis configuration.
+```javascript
+var tokenBucket = new TokenBucket({
+  redis: {
+    bucketName: 'myBucket',
+    redisClientConfig: {
+      host: 'myhost',
+      port: 1000,
+      options: {
+        auth_pass: 'mypass'
+      }
+    }
+  }
+});
+```
+Note that setting both `redisClient` or `redisClientConfig`, the redis client will be exposed at `tokenBucket.redis.redisClient`.
+This means you can watch for redis events, or execute redis client functions.
+For example if we want to close the redis connection we can execute `tokenBucket.redis.redisClient.quit()`.
 <a name="module_tokenbucket--TokenBucket#removeTokens"></a>
 #### tokenBucket.removeTokens(tokensToRemove) ⇒ <code>[Promise](https://github.com/petkaantonov/bluebird)</code>
 Remove the requested number of tokens. If the bucket (and any parent buckets) contains enough tokens this will happen immediately. Otherwise, it will wait to get enough tokens.
