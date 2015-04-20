@@ -1,6 +1,6 @@
 {
   "name": "tokenbucket",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "A flexible rate limiter using different variations of the Token Bucket algorithm, with hierarchy support, and optional persistence in Redis. Useful for limiting API requests, or other tasks that need to be throttled.",
   "keywords": [
     "rate limiter",
@@ -30,7 +30,7 @@
     "coveralls": "gulp coveralls"
   },
   "dependencies": {
-    "bluebird": "2.9.14",
+    "bluebird": "2.9.24",
     "redis": "^0.12.1"
   },
   "devDependencies": {

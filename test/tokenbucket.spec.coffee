@@ -14,7 +14,10 @@ bucket = null
 clock = null
 
 # Helper function that checks that the removal happened inmediately or after the supposed time, and that it leaves the right amount of tokens
-checkRemoval = ({tokensRemove, time, tokensLeft, done, clock, parentTokensLeft}) ->
+checkRemoval = ({tokensRemove, time, tokensLeft, done, clock, parentTokensLeft, nextTickScheduler}) ->
+  if nextTickScheduler
+    Promise.setScheduler (fn) ->
+      process.nextTick fn
   bucket.removeTokens(tokensRemove)
     .then (remainingTokens) ->
       expect(bucket.tokensLeft, 'bucket.tokensLeft').eql tokensLeft if tokensLeft?
@@ -408,6 +411,7 @@ describe 'a tokenbucket with parent bucket', ->
           time: 1000
           clock: clock
           done: done
+          nextTickScheduler: true
 
       describe 'when after waiting for the parent doesn\t have enough tokens any more', ->
         it 'waits to get enough tokens', (done) ->
