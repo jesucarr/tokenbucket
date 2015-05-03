@@ -39,26 +39,26 @@ The class that the module exports and that instantiate a new token bucket with t
 **Kind**: Exported class  
 <a name="new_module_tokenbucket--TokenBucket_new"></a>
 #### new TokenBucket([options])
+**Params**
+- [options] <code>Object</code> - The options object
+  - [.size] <code>Number</code> <code> = 1</code> - Maximum number of tokens to hold in the bucket. Also known as the burst size.
+  - [.tokensToAddPerInterval] <code>Number</code> <code> = 1</code> - Number of tokens to add to the bucket in one interval.
+  - [.interval] <code>Number</code> | <code>String</code> <code> = 1000</code> - The time passing between adding tokens, in milliseconds or as one of the following strings: 'second', 'minute', 'hour', day'.
+  - [.lastFill] <code>Number</code> - The timestamp of the last time when tokens where added to the bucket (last interval).
+  - [.tokensLeft] <code>Number</code> <code> = size</code> - By default it will initialize full of tokens, but you can set here the number of tokens you want to initialize it with.
+  - [.spread] <code>Boolean</code> <code> = false</code> - By default it will wait the interval, and then add all the tokensToAddPerInterval at once. If you set this to true, it will insert fractions of tokens at any given time, spreading the token addition along the interval.
+  - [.maxWait] <code>Number</code> | <code>String</code> - The maximum time that we would wait for enough tokens to be added, in milliseconds or as one of the following strings: 'second', 'minute', 'hour', day'. If any of the parents in the hierarchy has `maxWait`, we will use the smallest value.
+  - [.parentBucket] <code>TokenBucket</code> - A token bucket that will act as the parent of this bucket. Tokens removed in the children, will also be removed in the parent, and if the parent reach its limit, the children will get limited too.
+  - [.redis] <code>Object</code> - Options object for Redis
+    - .bucketName <code>String</code> - The name of the bucket to reference it in Redis. This is the only required field to set Redis persistance. The `bucketName` for each bucket **must be unique**.
+    - [.redisClient] <code>[redisClient](https://github.com/mranney/node_redis#rediscreateclient)</code> - The [Redis client](https://github.com/mranney/node_redis#rediscreateclient) to save the bucket.
+    - [.redisClientConfig] <code>Object</code> - [Redis client configuration](https://github.com/mranney/node_redis#rediscreateclient) to create the Redis client and save the bucket. If the `redisClient` option is set, this option will be ignored.
+      - [.port] <code>Number</code> <code> = 6379</code> - The connection port for the Redis client. See [configuration instructions](https://github.com/mranney/node_redis#rediscreateclient).
+      - [.host] <code>String</code> <code> = &#x27;127.0.0.1&#x27;</code> - The connection host for the Redis client. See [configuration instructions](https://github.com/mranney/node_redis#rediscreateclient)
+      - [.unixSocket] <code>String</code> - The connection unix socket for the Redis client. See [configuration instructions](https://github.com/mranney/node_redis#rediscreateclient)
+      - [.options] <code>String</code> - The options for the Redis client. See [configuration instructions](https://github.com/mranney/node_redis#rediscreateclient)
 
-| Param | Type | Default | Description |
-| --- | --- | --- | --- |
-| [options] | <code>Object</code> |  | The options object |
-| [options.size] | <code>Number</code> | <code>1</code> | Maximum number of tokens to hold in the bucket. Also known as the burst size. |
-| [options.tokensToAddPerInterval] | <code>Number</code> | <code>1</code> | Number of tokens to add to the bucket in one interval. |
-| [options.interval] | <code>Number</code> &#124; <code>String</code> | <code>1000</code> | The time passing between adding tokens, in milliseconds or as one of the following strings: 'second', 'minute', 'hour', day'. |
-| [options.lastFill] | <code>Number</code> |  | The timestamp of the last time when tokens where added to the bucket (last interval). |
-| [options.tokensLeft] | <code>Number</code> | <code>size</code> | By default it will initialize full of tokens, but you can set here the number of tokens you want to initialize it with. |
-| [options.spread] | <code>Boolean</code> | <code>false</code> | By default it will wait the interval, and then add all the tokensToAddPerInterval at once. If you set this to true, it will insert fractions of tokens at any given time, spreading the token addition along the interval. |
-| [options.maxWait] | <code>Number</code> &#124; <code>String</code> |  | The maximum time that we would wait for enough tokens to be added, in milliseconds or as one of the following strings: 'second', 'minute', 'hour', day'. If any of the parents in the hierarchy has `maxWait`, we will use the smallest value. |
-| [options.parentBucket] | <code>TokenBucket</code> |  | A token bucket that will act as the parent of this bucket. Tokens removed in the children, will also be removed in the parent, and if the parent reach its limit, the children will get limited too. |
-| [options.redis] | <code>Object</code> |  | Options object for Redis |
-| options.redis.bucketName | <code>String</code> |  | The name of the bucket to reference it in Redis. This is the only required field to set Redis persistance. The `bucketName` for each bucket **must be unique**. |
-| [options.redis.redisClient] | <code>[redisClient](https://github.com/mranney/node_redis#rediscreateclient)</code> |  | The [Redis client](https://github.com/mranney/node_redis#rediscreateclient) to save the bucket. |
-| [options.redis.redisClientConfig] | <code>Object</code> |  | [Redis client configuration](https://github.com/mranney/node_redis#rediscreateclient) to create the Redis client and save the bucket. If the `redisClient` option is set, this option will be ignored. |
-| [options.redis.redisClientConfig.port] | <code>Number</code> | <code>6379</code> | The connection port for the Redis client. See [configuration instructions](https://github.com/mranney/node_redis#rediscreateclient). |
-| [options.redis.redisClientConfig.host] | <code>String</code> | <code>&#x27;127.0.0.1&#x27;</code> | The connection host for the Redis client. See [configuration instructions](https://github.com/mranney/node_redis#rediscreateclient) |
-| [options.redis.redisClientConfig.unixSocket] | <code>String</code> |  | The connection unix socket for the Redis client. See [configuration instructions](https://github.com/mranney/node_redis#rediscreateclient) |
-| [options.redis.redisClientConfig.options] | <code>String</code> |  | The options for the Redis client. See [configuration instructions](https://github.com/mranney/node_redis#rediscreateclient) This options will be properties of the class instances. The properties `tokensLeft` and `lastFill` will get updated when we add/remove tokens. |
+This options will be properties of the class instances. The properties `tokensLeft` and `lastFill` will get updated when we add/remove tokens.
 
 **Example**  
 A filled token bucket that can hold 100 tokens, and it will add 30 tokens every minute (all at once).
@@ -146,10 +146,8 @@ Operational errors will be returned with the following `name` property, so they 
 **Kind**: instance method of <code>[TokenBucket](#exp_module_tokenbucket--TokenBucket)</code>  
 **Fulfil**: <code>Number</code> - The remaining tokens number, taking into account the parent if it has it.  
 **Reject**: <code>Error</code> - See description for the different operational errors, and the example with how to handle them.  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| tokensToRemove | <code>Number</code> | The number of tokens to remove. |
+**Params**
+- tokensToRemove <code>Number</code> - The number of tokens to remove.
 
 **Example**  
 We have some code that uses 3 API requests, so we would need to remove 3 tokens from our rate limiter bucket.
@@ -171,10 +169,8 @@ Attempt to remove the requested number of tokens and return inmediately.
 
 **Kind**: instance method of <code>[TokenBucket](#exp_module_tokenbucket--TokenBucket)</code>  
 **Returns**: <code>Boolean</code> - If it could remove the tokens inmediately it will return `true`, if not possible or needs to wait, it will return `false`.  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| tokensToRemove | <code>Number</code> | The number of tokens to remove. |
+**Params**
+- tokensToRemove <code>Number</code> - The number of tokens to remove.
 
 **Example**  
 ```javascript
