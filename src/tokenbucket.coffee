@@ -379,8 +379,8 @@ class TokenBucket
     * @returns {external:Promise}
     * @fulfil {true}
     * @reject {Error} - See description for the operational error, and the example with how to handle it.
-    * @example
-    * See {@link module:tokenbucket#save} ``` ```
+    * @example @lang off
+    * See {@link module:tokenbucket#save}
   ###
   loadSaved: =>
     resolver = Promise.pending()
