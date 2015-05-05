@@ -184,12 +184,11 @@ if (tokenBucket.removeTokensSync(50)) {
 #### tokenBucket.save() ⇒ <code>[Promise](https://github.com/petkaantonov/bluebird)</code>
 Saves the bucket lastFill and tokensLeft to Redis. If it has any parents with `redis` options, they will get saved too.
 
-If we call this function and we didn't set the redis options, the error will have `'NoRedisOptions'` as the `name` property, so it can be handled specifically.
-If there is an error with Redis it will be rejected with the error returned by Redis.
-
 **Kind**: instance method of <code>[TokenBucket](#exp_module_tokenbucket--TokenBucket)</code>  
 **Fulfil**: <code>true</code>  
-**Reject**: <code>Error</code> - See description for the operational error, and the example with how to handle it.  
+**Reject**: <code>Error</code>  
+If we call this function and we didn't set the redis options, the error will have `'NoRedisOptions'` as the `name` property, so it can be handled specifically.
+If there is an error with Redis it will be rejected with the error returned by Redis.  
 **Example**  
 We have a worker process that uses 1 API requests, so we would need to remove 1 token (default) from our rate limiter bucket.
 If we had to wait more than the specified `maxWait` to get enough tokens, we would end the worker process.
