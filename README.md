@@ -224,7 +224,7 @@ If there is an error with Redis it will be rejected with the error returned by R
 **Fulfil**: <code>true</code>  
 **Reject**: <code>Error</code> - See description for the operational error, and the example with how to handle it.  
 **Example**  
-See [save](#module_tokenbucket--TokenBucket#save) ``` ```
+See [save](#module_tokenbucket--TokenBucket#save)
 
 ## Testing
 
