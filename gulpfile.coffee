@@ -38,7 +38,7 @@ gulp.task 'coveralls', ->
 gulp.task 'doc', ->
   gulp.src 'lib/**/*.js'
     .pipe concat('README.md')
-    .pipe gulpJsdoc2md({template: fs.readFileSync('README.hbs', 'utf8')})
+    .pipe gulpJsdoc2md({template: fs.readFileSync('README.hbs', 'utf8'), 'param-list-format': 'list'})
     .on 'error', (err) ->
       gutil.log 'jsdoc2md failed:', err.message
     .pipe gulp.dest('.')
