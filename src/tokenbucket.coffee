@@ -184,16 +184,15 @@ class TokenBucket
 
   ###*
     * @desc Remove the requested number of tokens. If the bucket (and any parent buckets) contains enough tokens this will happen immediately. Otherwise, it will wait to get enough tokens.
-    *
-    * Operational errors will be returned with the following `name` property, so they can be handled accordingly:
-    * * `'NotEnoughSize'` - The requested tokens are greater than the bucket size.
-    * * `'NoInfinityRemoval'` - It is not possible to remove infinite tokens, because even if the bucket has infinite size, the `tokensLeft` would be indeterminant.
-    * * `'ExceedsMaxWait'` - The time we need to wait to be able to remove the tokens requested exceed the time set in `maxWait` configuration (parent or child).
     * @param {Number} tokensToRemove - The number of tokens to remove.
     * @returns {external:Promise}
     * @fulfil {Number} - The remaining tokens number, taking into account the parent if it has it.
-    * @reject {Error} - See description for the different operational errors, and the example with how to handle them.
+    * @reject {Error} - Operational errors will be returned with the following `name` property, so they can be handled accordingly:
+    * * `'NotEnoughSize'` - The requested tokens are greater than the bucket size.
+    * * `'NoInfinityRemoval'` - It is not possible to remove infinite tokens, because even if the bucket has infinite size, the `tokensLeft` would be indeterminant.
+    * * `'ExceedsMaxWait'` - The time we need to wait to be able to remove the tokens requested exceed the time set in `maxWait` configuration (parent or child).
     *
+    * .
     * @example
     * We have some code that uses 3 API requests, so we would need to remove 3 tokens from our rate limiter bucket.
     * If we had to wait more than the specified `maxWait` to get enough tokens, we would handle that in certain way.
@@ -325,8 +324,7 @@ class TokenBucket
     *
     * @returns {external:Promise}
     * @fulfil {true}
-    * @reject {Error}  
-    * If we call this function and we didn't set the redis options, the error will have `'NoRedisOptions'` as the `name` property, so it can be handled specifically.
+    * @reject {Error} - If we call this function and we didn't set the redis options, the error will have `'NoRedisOptions'` as the `name` property, so it can be handled specifically.
     * If there is an error with Redis it will be rejected with the error returned by Redis.
     * @example
     * We have a worker process that uses 1 API requests, so we would need to remove 1 token (default) from our rate limiter bucket.
@@ -373,12 +371,10 @@ class TokenBucket
 
   ###*
     * @desc Loads the bucket lastFill and tokensLeft as it was saved in Redis. If it has any parents with `redis` options, they will get loaded too.
-    *
-    * If we call this function and we didn't set the redis options, the error will have `'NoRedisOptions'` as the `name` property, so it can be handled specifically.
-    * If there is an error with Redis it will be rejected with the error returned by Redis.
     * @returns {external:Promise}
     * @fulfil {true}
-    * @reject {Error} - See description for the operational error, and the example with how to handle it.
+    * @reject {Error} - If we call this function and we didn't set the redis options, the error will have `'NoRedisOptions'` as the `name` property, so it can be handled specifically.
+    * If there is an error with Redis it will be rejected with the error returned by Redis.
     * @example @lang off
     * See {@link module:tokenbucket#save}
   ###
