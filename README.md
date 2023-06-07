@@ -154,7 +154,7 @@ We have some code that uses 3 API requests, so we would need to remove 3 tokens 
 If we had to wait more than the specified `maxWait` to get enough tokens, we would handle that in certain way.
 ```javascript
 tokenBucket.removeTokens(3).then(function(remainingTokens) {
-   console.log('10 tokens removed, ' + remainingTokens + 'tokens left');
+   console.log('3 tokens removed, ' + remainingTokens + 'tokens left');
    // make triple API call
 }).catch(function (err) {
   console.log(err)
